@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skyline cafe and restro - Premium Dining</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Hero / Slideshow full-screen section */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh; /* Full viewport height */
+      overflow: hidden;
+    }
+    .hero .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .hero .slide.active {
+      opacity: 1;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 5;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 0 1rem;
+    }
+
+    /* Scroll fade effect: hero disappears on scroll */
+    .hero.hide {
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+    }
+
+    /* Styles for rest of page content */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    html { scroll-behavior: smooth; }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+    .category-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      transition: transform 0.5s, box-shadow 0.5s;
+    }
+    .category-card:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 10px 10px -5px rgba(0,0,0,0.1);
+    }
+    .category-card img {
+      display: block;
+      width: 100%;
+      height: 12rem;
+      object-fit: cover;
+      transition: transform 0.7s;
+    }
+    .category-card:hover img { transform: scale(1.10); }
+    .badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: #f59e0b;
+      color: black;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .category-title {
+      padding: 1.5rem;
+      font-size: 1.125rem;
+      font-weight: bold;
+      color: #1f2937;
+      text-align: center;
+      transition: color 0.3s;
+    }
+    .category-card:hover .category-title { color: #f59e0b; }
+
+  </style>
+</head>
+<body class="min-h-screen bg-white font-sans">
+
+  <!-- Navigation -->
+  <header id="header" class="fixed top-0 w-full z-50 transform transition-transform duration-300 bg-transparent">
+    <div class="max-w-7xl mx-auto px-6 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg ring-2 ring-amber-400/30">
+            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cd6c5209de8f31bc68da17/a23460158_Screenshot2025-09-19190835.png" alt="Skyline Skyline cafe and restro Logo" class="w-full h-full object-cover"/>
+          </div>
+          <div>
+            <span class="text-xl font-bold js-header-color text-white">Skyline Skyline cafe and restro</span>
+            <div class="text-xs js-header-color text-white/90">Premium Dining</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="tel:+919625062626" id="call-now" class="hidden md:inline-flex bg-amber-500 hover:bg-amber-600 text-black font-semibold px-5 py-2 rounded-full items-center gap-2">
+            Call Now
+          </a>
+          <div class="relative">
+            <button id="more-btn" aria-haspopup="true" aria-expanded="false" class="p-2 rounded-full hover:bg-gray-100 text-black">...</button>
+            <div id="more-dropdown" class="hidden absolute right-0 mt-2 w-44 bg-white/95 backdrop-blur-sm shadow-lg rounded-xl border border-gray-100 z-50">
+              <a href="#menu" class="block px-4 py-2 hover:bg-gray-100">Menu</a>
+              <a href="#facilities" class="block px-4 py-2 hover:bg-gray-100">Facilities</a>
+              <a href="#contact" class="block px-4 py-2 hover:bg-gray-100">Contact</a>
+              <div class="px-4 py-2 border-t border-gray-100">
+                <a href="tel:+919625062626" class="flex items-center gap-2 text-amber-600 font-semibold">Call Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero section with full-screen slideshow -->
+  <section class="hero" id="hero">
+    <div class="slide" style="background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cd6c5209de8f31bc68da17/10ce1c9b2_generated-image.png');"></div>
+    <div class="slide" style="background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cd6c5209de8f31bc68da17/a23460158_Screenshot2025-09-19190835.png');"></div>
+    <div class="slide" style="background-image: url('https://assets.zeezest.com/blogs/PROD_Vegetarian%20starters_1691749961064.jpg');"></div>
+    <div class="slide" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkzH2xif3yhfvuIp9Q1v37KMECZkpjoIkBGA&s');"></div>
+    <div class="slide" style="background-image: url('https://www.awesomecuisine.com/wp-content/uploads/2009/06/Plain-Dosa.jpg');"></div>
+
+    <div class="hero-content">
+      <div>
+        <div class="inline-flex items-center gap-2 bg-amber-500/20 backdrop-blur-sm px-4 py-2 rounded-full border border-amber-400/30 mb-6">
+          <span class="text-amber-200 font-medium">Premium Dining Experience</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+          Welcome to <span class="block text-amber-400 font-serif italic">Skyline Skyline cafe and restro</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto leading-relaxed">
+          Enjoy premium dining with delicious flavors, crafted with love, and served in a warm family-friendly environment.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#menu" id="explore-menu-btn" class="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 text-center">
+            Explore Menu
+          </a>
+          <a href="#facilities" id="our-facilities-btn" class="border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-3 rounded-full transition-all duration-300 text-center">
+            Our Facilities
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rest of page content -->
+  <section id="menu" class="py-10 bg-gradient-to-br from-gray-50 to-amber-50/30">
+    <div class="max-w-md mx-auto px-4">
+      <div class="text-center mb-6">
+        <span class="block text-lg text-amber-600 font-sans font-medium mt-1"><h1><b><i> Menu</i></b></h1></span>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <!-- … your category cards … -->
+        <a href="Veg Starters.html" class="category-card">
+          <img src="https://assets.zeezest.com/blogs/PROD_Vegetarian%20starters_1691749961064.jpg" alt="Veg Starters">
+          <div class="category-title text-sm">Veg Starters</div>
+          <div class="badge text-xs">⭐ Premium</div>
+        </a>
+        <a href="Non Veg Starter.html" class="category-card">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkzH2xif3yhfvuIp9Q1v37KMECZkpjoIkBGA&s" alt="Non Veg Starters">
+          <div class="category-title text-sm">Non Veg Starters</div>
+          <div class="badge text-xs">⭐ Premium</div>
+        </a>
+        <!-- etc… rest of your cards -->
+      </div>
+    </div>
+  </section>
+
+  <section id="facilities" class="py-10 bg-gradient-to-br from-gray-50 to-amber-50/30">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 font-serif">आपके लिए सुविधाएँ</h2>
+        <span class="block text-xl md:text-2xl text-amber-600 font-sans font-medium mt-1">Premium Facilities</span>
+        <p class="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+          We provide exceptional facilities to ensure your dining experience is comfortable and memorable.
+        </p>
+      </div>
+      <div class="flex space-x-4 overflow-x-auto pb-4 -mx-6 px-6">
+        <!-- your facility cards -->
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact" class="bg-gradient-to-br from-amber-900 to-amber-800 text-white">
+    <div class="max-w-7xl mx-auto px-6 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div class="text-center md:text-left">
+          <div class="flex items-center gap-3 justify-center md:justify-start mb-4">
+            <div class="w-12 h-12 bg-gradient-to-r from-amber-400 to-amber-500 rounded-xl flex items-center justify-center">
+              <i data-lucide="coffee" class="w-7 h-7 text-white"></i>
+            </div>
+            <h3 class="text-3xl font-bold font-serif">Skyline Skyline cafe and restro</h3>
+          </div>
+          <p class="text-amber-200 leading-relaxed">
+            Experience authentic flavors and premium dining in a warm, family-friendly atmosphere.
+          </p>
+        </div>
+        <div class="text-center md-text-left">
+          <h4 class="text-xl font-bold mb-6 text-amber-100">Contact Information</h4>
+          <div class="space-y-4">
+            <div class="flex items-center gap-3 justify-center md:justify-start">
+              <div class="w-10 h-10 bg-amber-700/50 rounded-lg flex items-center justify-center">
+                <i data-lucide="phone" class="w-5 h-5 text-amber-300"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-amber-100">+91-9625062626</p>
+                <p class="text-sm text-amber-300">Call for reservations</p>
+              </div>
+            </div>
+            <!-- more contact info -->
+          </div>
+        </div>
+        <div class="text-center md-text-left">
+          <!-- social / extra content -->
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Slideshow logic for hero section
+    const slides = document.querySelectorAll('.hero .slide');
+    let current = 0;
+    slides[current].classList.add('active');
+
+    function showNextSlide() {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }
+    setInterval(showNextSlide, 3000);
+
+    // Scroll effect: hide hero section when user scrolls past
+    const hero = document.getElementById('hero');
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      // Agar scrollY > half the hero height, hide the hero
+      if (scrollY > window.innerHeight * 0.5) {
+        hero.classList.add('hide');
+      } else {
+        hero.classList.remove('hide');
+      }
+    });
+
+    // Header hide/show on scroll
+    let lastScroll = 0;
+    const headerEl = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      if (currentScroll > lastScroll && currentScroll > 100) {
+        headerEl.style.transform = 'translateY(-120%)';
+      } else {
+        headerEl.style.transform = 'translateY(0)';
+      }
+      lastScroll = currentScroll;
+    });
+
+    // 3-dot menu toggle (if applicable)
+    const moreBtn = document.getElementById('more-btn');
+    const dropdown = document.getElementById('more-dropdown');
+    if (moreBtn && dropdown) {
+      moreBtn.addEventListener('click', () => {
+        dropdown.classList.toggle('hidden');
+      });
+      window.addEventListener('click', (e) => {
+        if (!moreBtn.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
